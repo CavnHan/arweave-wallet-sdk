@@ -3,25 +3,40 @@ import Transaction from "arweave/node/lib/transaction";
 import {TransactionStatusResponse} from "arweave/node/transactions";
 import {BlockData} from "arweave/node/blocks";
 import {NetworkInfoInterface} from "arweave/node/network";
-
-const Arweave = require('arweave');
 //init instance
+import Arweave from 'arweave';
+//init instance
+// const arweave = Arweave.init({
+//     // You can test with a local node instead, using ArLocal    //config node info
+//     //config node info
+//     host: '127.0.0.1',
+//     port: 1984,
+//     protocol: 'http'
+// });
+
 const arweave = Arweave.init({
-    // You can test with a local node instead, using ArLocal    //config node info
-    //config node info
-    host: '127.0.0.1',
-    port: 1984,
-    protocol: 'http'
+    host: 'arweave.net',
+    port: 443, protocol: 'https',
+    timeout: 10000
 });
+
+
+interface TransactionParma {
+    //transactionAnchors
+    last_tx: string,
+    //price
+    reward: string
+}
 
 /**
  * Data transaction parameters
  * @key: Wallet private key
  * @data: Transaction data
  */
-export interface DataTransactionParam {
+export interface DataTransactionParam extends TransactionParma {
     key: any,
     data: string,
+
 }
 
 /**
@@ -30,7 +45,7 @@ export interface DataTransactionParam {
  * @target: Target address
  * @quantity: Transaction amount, unit: Ar
  */
-export interface WalletTransactionParam {
+export interface WalletTransactionParam extends TransactionParma {
     key: any,
     target: string,
     quantity: string
@@ -106,7 +121,9 @@ export interface GetBlcokWithIndepHash {
 export async function createDataTransaction(param: DataTransactionParam): Promise<any> {
     // Create the transaction
     const transaction = await arweave.createTransaction({
-        data: Buffer.from(param.data, 'utf8')
+        data: Buffer.from(param.data, 'utf8'),
+        reward: param.reward,
+        last_tx: param.last_tx
     }, param.key);
     //Sign the transaction
     await sign({transaction: transaction, key: param.key})
@@ -124,7 +141,9 @@ export async function createWalletTransaction(param: WalletTransactionParam): Pr
     // Create the transaction
     const transaction = await arweave.createTransaction({
         target: param.target,
-        quantity: arweave.ar.arToWinston(param.quantity)
+        quantity: arweave.ar.arToWinston(param.quantity),
+        reward: param.reward,
+        last_tx: param.last_tx
     }, param.key)
     //Sign the transaction
     await sign({transaction: transaction, key: param.key})

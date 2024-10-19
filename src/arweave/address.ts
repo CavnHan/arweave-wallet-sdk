@@ -3,12 +3,18 @@ import NodeCryptoDriver from 'arweave/node/lib/crypto/node-driver';
 //init crypto driver
 Arweave.crypto = new NodeCryptoDriver();
 //init instance
+// const arweave = Arweave.init({
+//     // You can test with a local node instead, using ArLocal
+//     host: '127.0.0.1',
+//     port: 1984,
+//     protocol: 'http'
+// });
 const arweave = Arweave.init({
-    // You can test with a local node instead, using ArLocal
-    host: '127.0.0.1',
-    port: 1984,
-    protocol: 'http'
+    host: 'arweave.net', port: 443,
+    protocol: 'https',
+    timeout: 10000
 });
+
 
 /**
  * create arweave wallet

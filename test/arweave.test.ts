@@ -20,39 +20,41 @@ describe('arweave wallet test', () => {
      * 如果使用控制台启动，注释掉beforeAll和afterAll
      */
 
-        //init arlocal
-    let arLocal: ArLocal;
-    beforeAll(async () => {
-        // port = What port to use for ArLocal.
-        // showLogs = Should we show logs.
-        // dbPath = folder where the db will be temporary stored.
-        // persist = Whether or not data stored should be persisted among server restarts.
-        arLocal = new ArLocal(1984, true, '.db', true)
-        await arLocal.start()
+    /*使用代码启动,放开beforeAll和afterAll*/
 
-        process.env.ARWEAVE_GATEWAY_URL = 'http://localhost:1984';
-        //mint Ar to wallet
-        const walletAddress = 'your wallet address';
-        const amountToMint = 20; // arlocal mint winston， 1 AR = 10^12 winston
-        const mintUrl = `http://localhost:1984/mint/${walletAddress}/${amountToMint * 1000000000000}`; // 注意单位转换
-        try {
-            const response = await axios.get(mintUrl);
-            if (response.status === 200) {
-                console.log(`Successfully minted ${amountToMint} AR to ${walletAddress}`);
-            } else {
-                console.error(`Failed to mint AR: ${response.status} ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error(`Error minting AR:`, error);
-        }
-        await axios.get('http://localhost:1984/mine');  // immediately dig out a block
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    });
-
-    afterAll(async () => {
-        await arLocal.stop();
-        console.log('arlocal stopped !')
-    })
+    //init arlocal
+    // let arLocal: ArLocal;
+    // beforeAll(async () => {
+    //     // port = What port to use for ArLocal.
+    //     // showLogs = Should we show logs.
+    //     // dbPath = folder where the db will be temporary stored.
+    //     // persist = Whether or not data stored should be persisted among server restarts.
+    //     arLocal = new ArLocal(1984, true, '.db', true)
+    //     await arLocal.start()
+    //
+    //     process.env.ARWEAVE_GATEWAY_URL = 'http://localhost:1984';
+    //     //mint Ar to wallet
+    //     const walletAddress = 'your wallet address';
+    //     const amountToMint = 20; // arlocal mint winston， 1 AR = 10^12 winston
+    //     const mintUrl = `http://localhost:1984/mint/${walletAddress}/${amountToMint * 1000000000000}`; // 注意单位转换
+    //     try {
+    //         const response = await axios.get(mintUrl);
+    //         if (response.status === 200) {
+    //             console.log(`Successfully minted ${amountToMint} AR to ${walletAddress}`);
+    //         } else {
+    //             console.error(`Failed to mint AR: ${response.status} ${response.statusText}`);
+    //         }
+    //     } catch (error) {
+    //         console.error(`Error minting AR:`, error);
+    //     }
+    //     await axios.get('http://localhost:1984/mine');  // immediately dig out a block
+    //     await new Promise(resolve => setTimeout(resolve, 1000));
+    // });
+    //
+    // afterAll(async () => {
+    //     await arLocal.stop();
+    //     console.log('arlocal stopped !')
+    // })
 
     test('create wallet', async () => {
         const wallet = await createArWeaveWallet()
@@ -81,8 +83,12 @@ describe('arweave wallet test', () => {
         const jwk = require('./fixtures/your jwk json file')
         const param = {
             key: jwk,
-            data: 'test data : Cavn aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdfsdffffffffffffffffffffffff'
+            data: 'test data : Cavn aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdfsdffffffffffffffffffffffff',
             // data: 'test data: 因为困难多壮志，不教红尘惑坚心'
+            //交易锚点
+            last_tx: '',
+            //交易价格
+            reward: ''
         } as DataTransactionParam;
         let transaction = await createDataTransaction(param);
         console.log('transaction:\n', transaction)
@@ -92,8 +98,10 @@ describe('arweave wallet test', () => {
         const jwk = require('./fixtures/your jwk json file')
         const param = {
             key: jwk,
-            target: 'target wallet address',
-            quantity: '0.1'
+            target: 'Y4WjWyDePNTCCoJV7zhaw5cqXwA6xSAS8bVRfkzH_bk',
+            quantity: '0.01',
+            last_tx: '',
+            reward: '13947468313'
         } as WalletTransactionParam;
         let transaction = await createWalletTransaction(param);
         console.log('transaction:\n', transaction)
