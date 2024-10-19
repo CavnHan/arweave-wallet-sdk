@@ -11,4 +11,14 @@
    pnpm add arlocal -D
    ```
 
-   
+3. 使用：
+
+   - 终端启动：
+
+     ```shell
+     npx arlocal
+     ```
+
+   - 代码启动：
+
+     参考测试文件代码
