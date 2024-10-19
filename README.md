@@ -1,7 +1,6 @@
 # arweave-wallet-sdk
-ethereum-wallet-sdk
 
-ethereum-wallet-sdk 是一个Arweave SDK，提供钱包生成，地址导出，交易生成，离线签名，交易广播等功能。
+Arweave SDK，提供钱包生成，地址导出，交易生成，离线签名，交易广播等功能。
 
 ## 1.✅安装依赖
 
